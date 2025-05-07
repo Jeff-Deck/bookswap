@@ -1,0 +1,24 @@
+{% extends 'products/base.html' %}
+{% block title %}Mis Libros{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📚 Mis Libros</h1>
+    <a href="{% url 'create_book' %}" class="inline-block mb-4 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded">
+        ➕ Agregar nuevo libro
+    </a>
+    {% if books %}
+        <ul class="space-y-4">
+            {% for book in books %}
+                <li class="bg-white p-4 rounded shadow-md">
+                    <h2 class="text-xl font-bold text-gray-800">{{ book.title }}</h2>
+                    <p class="text-gray-600">Autor: {{ book.author }} | Género: {{ book.genre }}</p>
+                    <p class="text-gray-500 text-sm">Ubicación: {{ book.location }} - Estado: {{ book.condition }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-600">Aún no has publicado libros.</p>
+    {% endif %}
+</div>
+{% endblock %}

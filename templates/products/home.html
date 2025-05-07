@@ -1,0 +1,21 @@
+{% extends 'products/base.html' %}
+{% block title %}Inicio - BookSwap{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center text-center py-16">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">📖 Bienvenido a BookSwap</h1>
+    <p class="text-lg text-gray-600 mb-6">Intercambia libros con personas cercanas a ti.</p>
+    {% if not user.is_authenticated %}
+        <div class="flex gap-4">
+            <a href="{% url 'register' %}" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg shadow">
+                📝 Regístrate
+            </a>
+            <a href="{% url 'login' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow">
+                🔐 Inicia sesión
+            </a>
+        </div>
+    {% else %}
+        <p class="text-lg text-blue-700">¡Hola, {{ user.username }}!</p>
+    {% endif %}
+</div>
+{% endblock %}
