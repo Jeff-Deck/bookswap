@@ -43,7 +43,7 @@ bookswap_project/
 
 1. Clona el repositorio:
 ```bash
-git clone https://github.com/tu_usuario/bookswap.git
+git clone https://github.com/Jeff-Deck/bookswap.git
 cd bookswap
 ```
 
