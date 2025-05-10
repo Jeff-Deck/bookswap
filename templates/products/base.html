@@ -14,7 +14,7 @@
             <div class="flex gap-6 items-center">
                 <a href="{% url 'home' %}" class="text-lg font-semibold text-gray-800 hover:text-blue-600">🏠 Home</a>
                 {% if user.is_authenticated %}
-                    <a href="/admin/" class="text-lg text-gray-700 hover:text-blue-600">⚙️ Admin</a>
+                  <!--   <a href="/admin/" class="text-lg text-gray-700 hover:text-blue-600">⚙️ Admin</a>-->
                     <a href="{% url 'my_books' %}" class="text-lg text-gray-700 hover:text-blue-600">📚 Mis libros</a>
                     <a href="{% url 'exchange_books' %}" class="text-lg text-gray-700 hover:text-blue-600">🔄 Intercambiar</a>
                 {% endif %}
