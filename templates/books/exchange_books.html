@@ -38,6 +38,14 @@
                     <h2 class="text-xl font-bold text-gray-800">{{ book.title }}</h2>
                     <p class="text-gray-600">Autor: {{ book.author }} | Género: {{ book.genre }}</p>
                     <p class="text-gray-500 text-sm">Ciudad: {{ book.location }} | Estado: {{ book.condition }}</p>
+                    {% if book.owner != user %}
+                        <form method="post" action="{% url 'send_exchange_request' book.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                                📩 Solicitar intercambio
+                            </button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

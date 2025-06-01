@@ -1,0 +1,40 @@
+{% extends 'products/base.html' %}
+{% block title %}Historial de Intercambios{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📖 Mi Historial de Intercambios</h1>
+
+    {% if history %}
+        <ul class="space-y-4">
+            {% for record in history %}
+                <li class="bg-white p-4 rounded shadow">
+                    <p class="text-gray-800">
+                        Libro: <strong>{{ record.book.title }}</strong><br>
+                        Intercambiado con:
+                        {% if record.sender == user %}
+                            <a href="{% url 'ver_perfil' record.receiver.id %}" class="text-blue-600 hover:underline">
+                                <strong>{{ record.receiver }}</strong>
+                            </a> (tú lo enviaste)
+                        {% else %}
+                            <a href="{% url 'ver_perfil' record.sender.id %}" class="text-blue-600 hover:underline">
+                                <strong>{{ record.sender }}</strong>
+                            </a> (tú lo recibiste)
+                        {% endif %}
+                        {% if record.can_rate %}
+                            <a href="{% url 'rate_exchange' record.id %}" class="text-blue-600 hover:underline">Calificar</a>
+                        {% else %}
+                            <p class="text-green-600">✅ Ya calificaste este intercambio</p>
+                        {% endif %}
+                    </p>
+                    <p class="text-gray-500 text-sm">
+                        Fecha: {{ record.exchanged_on|date:"d M Y H:i" }}
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-600">Aún no has realizado intercambios.</p>
+    {% endif %}
+</div>
+{% endblock %}

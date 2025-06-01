@@ -1,0 +1,33 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+
+# Django
+*.log
+*.pot
+*.pyc
+
+# FastAPI / Uvicorn cache
+*.pid
+*.cache
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+
+# VS Code / IDEs
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos innecesarios
+*.txt
+trash/

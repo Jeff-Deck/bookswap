@@ -1,0 +1,84 @@
+{% extends 'products/base.html' %}
+{% block title %}Perfil de {{ perfil.username }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto py-10 px-6 space-y-10">
+
+    <!-- Encabezado -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">👤 Perfil de {{ perfil.username }}</h2>
+        <p class="text-gray-700"><strong>Provincia:</strong> {{ perfil.province }}</p>
+        <p class="text-gray-700"><strong>Ciudad:</strong> {{ perfil.city }}</p>
+    </div>
+
+    <!-- Libros publicados -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-semibold text-blue-700 mb-4">📘 Libros publicados</h3>
+        {% if libros %}
+            <ul class="space-y-2">
+                {% for libro in libros %}
+                <li class="border border-gray-300 rounded p-4">
+                    <h4 class="text-lg font-bold text-gray-800">{{ libro.title }}</h4>
+                    <p class="text-sm text-gray-600">Autor: {{ libro.author }} | Género: {{ libro.genre }} | Estado: {{ libro.condition }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">No hay libros publicados.</p>
+        {% endif %}
+    </div>
+
+    <!-- Solicitudes recibidas -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-semibold text-blue-700 mb-4">📩 Solicitudes recibidas</h3>
+        {% if solicitudes %}
+            <ul class="space-y-2">
+                {% for s in solicitudes %}
+                <li class="border border-gray-300 rounded p-4">
+                    <p class="text-gray-800">📖 Libro: <strong>{{ s.book.title }}</strong></p>
+                    <p class="text-sm text-gray-600">De: {{ s.sender }} | Estado: {{ s.status }} | Fecha: {{ s.timestamp|slice:":16" }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">Sin solicitudes recibidas.</p>
+        {% endif %}
+    </div>
+
+    <!-- Historial de intercambios -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-semibold text-blue-700 mb-4">🔁 Historial de intercambios</h3>
+        {% if historial %}
+            <ul class="space-y-2">
+                {% for h in historial %}
+                <li class="border border-gray-300 rounded p-4">
+                    <p class="text-gray-800">📖 {{ h.book.title }} con {{ h.receiver }}</p>
+                    <p class="text-sm text-gray-600">Fecha: {{ h.exchanged_on|slice:":16" }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">Sin intercambios aún.</p>
+        {% endif %}
+    </div>
+
+    <!-- Calificaciones -->
+    <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-2xl font-semibold text-blue-700 mb-4">⭐ Calificaciones recibidas</h3>
+        {% if ratings %}
+            <ul class="space-y-2">
+                {% for r in ratings %}
+                <li class="border border-gray-300 rounded p-4">
+                    <p class="text-yellow-600 font-bold">{{ r.score }} ★</p>
+                    <p class="text-gray-700">{{ r.comment }}</p>
+                    <p class="text-sm text-gray-500">Fecha: {{ r.rated_at|slice:":16" }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">Sin calificaciones aún.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

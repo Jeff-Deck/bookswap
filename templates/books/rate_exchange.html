@@ -1,0 +1,15 @@
+{% extends 'products/base.html' %}
+{% block title %}Calificar Intercambio{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto py-10 px-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">⭐ Califica tu intercambio con {{ other_user }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            Enviar calificación
+        </button>
+    </form>
+</div>
+{% endblock %}
