@@ -19,16 +19,19 @@
                     </p>
                     <p class="text-gray-600">Estado: {{ req.status }}</p>
 
-                    {% if req.status == 'accepted' and req.initiated %}
+                    {% if req.initiated %}
                         <a href="{% url 'conversation' req.id %}" class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
                             💬 Ver conversación
                         </a>
-                        <p class="text-sm text-green-600 mt-1">✅ Intercambio aceptado.</p>
 
+                        {% if req.status == 'accepted' %}
+                            <p class="text-sm text-green-600 mt-1">✅ Intercambio aceptado.</p>
+                        {% elif req.status == 'pending' %}
+                            <p class="text-sm text-yellow-600 mt-1">📬 El receptor mostró interés, esperando decisión.</p>
+                        {% endif %}
                     {% elif req.status == 'rejected' %}
                         <p class="text-sm text-red-600 mt-1">❌ Intercambio rechazado.</p>
-
-                    {% elif req.status == 'pending' and not req.initiated %}
+                    {% else %}
                         <p class="text-sm text-gray-500 mt-1">Esperando que el receptor confirme interés.</p>
                     {% endif %}
                 </li>

@@ -71,6 +71,11 @@
 
     <!-- Calificaciones -->
     <div class="bg-white p-6 rounded-lg shadow">
+         {% if promedio_rating %}
+        <p class="text-lg text-yellow-600 font-semibold mb-4">
+            ⭐ Promedio de calificación: {{ promedio_rating }} / 5
+        </p>
+    {% endif %}
         <h3 class="text-2xl font-semibold text-blue-700 mb-4">⭐ Calificaciones recibidas</h3>
         {% if ratings %}
             <ul class="space-y-2">

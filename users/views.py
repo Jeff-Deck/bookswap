@@ -35,10 +35,12 @@ def logout_view(request):
 
 
 
+
 @login_required
 def ver_perfil_view(request, user_id):
     base_url = "http://localhost:8001"
     perfil, libros, solicitudes, historial, ratings = {}, [], [], [], []
+    promedio_rating = None  # ✅ Inicializamos siempre
 
     try:
         perfil_resp = requests.get(f"{base_url}/users/{user_id}")
@@ -60,12 +62,18 @@ def ver_perfil_view(request, user_id):
         ratings_resp = requests.get(f"{base_url}/ratings/user/{user_id}")
         if ratings_resp.status_code == 200:
             ratings = ratings_resp.json()
+            if ratings:
+                try:
+                    promedio_rating = round(mean([r['score'] for r in ratings]), 2)
+                except Exception as e:
+                    print("⚠️ Error al calcular promedio:", e)
 
         print("📌 Perfil:", perfil)
         print("📘 Libros:", libros)
         print("📩 Solicitudes:", solicitudes)
         print("🔁 Historial:", historial)
         print("⭐ Ratings:", ratings)
+        print("📊 Promedio:", promedio_rating)
 
     except Exception as e:
         print("❌ Error al conectar con la API:", e)
@@ -77,4 +85,20 @@ def ver_perfil_view(request, user_id):
         "solicitudes": solicitudes,
         "historial": historial,
         "ratings": ratings,
+        "promedio_rating": promedio_rating,  # ✅ Se asegura que siempre exista
+    })
+
+
+def home_view(request):
+    top_users = []
+    try:
+        resp = requests.get("http://localhost:8001/ratings/top5")
+        if resp.status_code == 200:
+            top_users = resp.json()
+    except Exception as e:
+        print("❌ Error al obtener top 5:", e)
+
+    return render(request, "products/home.html", {
+        "user": request.user,
+        "top_users": top_users
     })

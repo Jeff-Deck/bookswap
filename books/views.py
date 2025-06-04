@@ -83,7 +83,14 @@ def received_requests_view(request):
 
 @login_required
 def handle_request_view(request, request_id):
-    req = get_object_or_404(ExchangeRequest, id=request_id, receiver=request.user)
+    req = get_object_or_404(
+        ExchangeRequest.objects.filter(
+            id=request_id,
+            status='pending'
+        ).filter(
+            Q(sender=request.user) | Q(receiver=request.user)
+        )
+    )
 
     if req.status == 'pending' and request.method == 'POST':
         action = request.POST.get('action')

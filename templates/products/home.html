@@ -17,5 +17,45 @@
     {% else %}
         <p class="text-lg text-blue-700">¡Hola, {{ user.username }}!</p>
     {% endif %}
+
+            <!-- Panel publicitario -->
+            <div class="w-full max-w-4xl bg-gradient-to-r from-red-100 via-yellow-100 to-blue-100 p-6 rounded-lg shadow-lg mt-8 flex items-center gap-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Russia.svg/2560px-Flag_of_Russia.svg.png" alt="Bandera de Rusia" class="w-32 h-20 object-cover rounded-md shadow-md border border-gray-300">
+                
+                <div class="text-left">
+                    <h2 class="text-2xl font-extrabold text-red-600 mb-2">📚 ¡Celebra el Día de la Lengua Rusa!</h2>
+                    <p class="text-gray-800 text-md">
+                        Este <strong>6 de junio</strong> conmemoramos el Día de la Lengua Rusa. ¿Has leído ya a Tolstói, Dostoievski o Pushkin?
+                        <br class="hidden sm:block"> ¡Anímate a buscar un libro ruso y lánzate a un nuevo intercambio!
+                    </p>
+                </div>
+            </div>
+
+
+
+
+            {% if top_users %}
+        <div class="w-full max-w-4xl bg-white p-6 rounded-lg shadow mt-6">
+            <h3 class="text-2xl font-semibold text-green-700 mb-4">🏆 Usuarios mejor puntuados</h3>
+            <table class="min-w-full text-left text-sm">
+                <thead class="text-gray-600 border-b">
+                    <tr>
+                        <th class="py-2 px-4">Usuario</th>
+                        <th class="py-2 px-4">Promedio</th>
+                        <th class="py-2 px-4"># Calificaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in top_users %}
+                    <tr class="border-t">
+                        <td class="py-2 px-4 font-semibold">{{ u.username }}</td>
+                        <td class="py-2 px-4">{{ u.average }}</td>
+                        <td class="py-2 px-4">{{ u.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
 </div>
 {% endblock %}
