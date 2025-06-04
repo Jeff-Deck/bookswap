@@ -1,12 +1,12 @@
-
 # 📚 BookSwap - Sistema de Intercambio de Libros
 
-BookSwap es una plataforma web que permite a los usuarios registrarse, publicar libros físicos disponibles para intercambio y buscar libros de otros usuarios según la ubicación y autor. Está desarrollado con Django para la lógica de servidor y frontend, y está preparado para futuras integraciones con FastAPI.
+BookSwap es una plataforma web que permite a los usuarios registrarse, publicar libros físicos disponibles para intercambio y buscar libros de otros usuarios según la ubicación y autor. Está desarrollado con Django para la lógica de servidor y frontend, y preparado para integraciones con FastAPI.
 
 ## 🚀 Tecnologías utilizadas
 
 - Python 3.13
 - Django 5.x
+- FastAPI (API REST para calificaciones)
 - TailwindCSS (CDN)
 - HTML5, CSS3
 - SQLite (modo desarrollo)
@@ -20,6 +20,15 @@ BookSwap es una plataforma web que permite a los usuarios registrarse, publicar 
 bookswap_project/
 ├── backend/                # Proyecto principal de Django
 │   └── settings.py
+├── api/                    # FastAPI: calificaciones, usuarios, solicitudes
+│   ├── database.py         # Conexión con SQLite
+│   ├── models.py           # Modelos SQLAlchemy
+│   ├── exchange            # Endpoints de intercambio
+│   │── books               # Endpoints de libros
+│   │── history             # Endpoints de historial de intercambios
+│   │── ratings             # Endpoints de calificaciones
+│   │── users               # Endpoints de usuarios
+│   └── main.py             # Instancia de FastAPI
 ├── users/                  # App para registro, login y modelo CustomUser
 │   ├── models.py
 │   ├── forms.py
@@ -50,7 +59,7 @@ cd bookswap
 2. Crea un entorno virtual e instálalo:
 ```bash
 python -m venv env
-env\Scripts\activate
+env\Scripts\activate  # En Windows
 pip install -r requirements.txt
 ```
 
@@ -61,17 +70,29 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-4. Ejecuta el servidor:
+4. Ejecuta el servidor de Django:
 ```bash
 python manage.py runserver
 ```
 
-5. Accede desde el navegador a:
+5. Ejecuta FastAPI (en otra terminal y otro puerto):
+```bash
+uvicorn api.main:app --reload --port 8001
+```
+
+6. Accede desde el navegador a:
 - Registro/Login: http://localhost:8000/users/
 - Publicar libro: http://localhost:8000/books/crear/
 - Intercambiar libros: http://localhost:8000/books/intercambiar/
 - Admin: http://localhost:8000/admin/
 
+## 📩 Notas adicionales
+
+- Las calificaciones entre usuarios se gestionan exclusivamente desde FastAPI.
+- El chat entre usuarios solo se activa si ambas partes han aceptado e iniciado el intercambio (`initiated = True`).
+- El proyecto está listo para ser desplegado en Render u otras plataformas.
+
 ## 🧾 Autor
 
 - Jefferson Ruiz - [UDLA - Ingeniería de Software]
+- Contacto personal: je1400r@gmail.com
