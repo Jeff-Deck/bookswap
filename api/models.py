@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey
 from api.database import Base
+from datetime import datetime
 
 
 class CustomUser(Base):
@@ -61,3 +62,12 @@ class ExchangeRating(Base):
     score = Column(Integer)
     comment = Column(Text)
     rated_at = Column(DateTime)
+
+class Message(Base):
+    __tablename__ = 'messages'
+
+    id = Column(Integer, primary_key=True, index=True)
+    exchange_request_id = Column(Integer, ForeignKey('books_exchangerequest.id'))
+    sender_id = Column(Integer, ForeignKey('users_customuser.id'))
+    content = Column(Text)
+    timestamp = Column(DateTime, default=datetime.utcnow)

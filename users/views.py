@@ -72,6 +72,7 @@ def ver_perfil_view(request, user_id):
 
     return render(request, "users/profile.html", {
         "perfil": perfil,
+        "user": request.user,
         "libros": libros,
         "solicitudes": solicitudes,
         "historial": historial,

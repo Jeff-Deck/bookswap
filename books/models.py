@@ -22,10 +22,35 @@ class ExchangeRequest(models.Model):
         ('rejected', 'Rechazado'),
     ]
 
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_requests')
-    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='received_requests')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='exchange_requests')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    sender = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='sent_requests'
+    )
+    receiver = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='received_requests'
+    )
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name='exchange_requests'
+    )
+    offered_book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name='offered_requests',
+        null=True,
+        blank=True,
+        verbose_name='Libro ofertado'
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
+    initiated = models.BooleanField(default=False, verbose_name="Interés confirmado")
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -33,11 +58,13 @@ class ExchangeRequest(models.Model):
 
 
 class ExchangeHistory(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='received_history')
+    offered_book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='offered_history', null=True, blank=True)
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='exchanges_sent')
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='exchanges_received')
     exchanged_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.book.title} de {self.sender} a {self.receiver} el {self.exchanged_on}"
+
 

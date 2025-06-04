@@ -10,7 +10,11 @@
             {% for record in history %}
                 <li class="bg-white p-4 rounded shadow">
                     <p class="text-gray-800">
-                        Libro: <strong>{{ record.book.title }}</strong><br>
+                        Libro solicitado: <strong>{{ record.book.title }}</strong><br>
+                        {% if record.offered_book %}
+                            Libro ofrecido: <strong>{{ record.offered_book.title }}</strong> ({{ record.offered_book.condition }}, {{ record.offered_book.genre }})<br>
+                        {% endif %}
+
                         Intercambiado con:
                         {% if record.sender == user %}
                             <a href="{% url 'ver_perfil' record.receiver.id %}" class="text-blue-600 hover:underline">
@@ -21,8 +25,10 @@
                                 <strong>{{ record.sender }}</strong>
                             </a> (tú lo recibiste)
                         {% endif %}
+
+                        <br>
                         {% if record.can_rate %}
-                            <a href="{% url 'rate_exchange' record.id %}" class="text-blue-600 hover:underline">Calificar</a>
+                            <a href="{% url 'rate_exchange' record.id %}" class="text-blue-600 hover:underline">⭐ Calificar a tu contraparte</a>
                         {% else %}
                             <p class="text-green-600">✅ Ya calificaste este intercambio</p>
                         {% endif %}

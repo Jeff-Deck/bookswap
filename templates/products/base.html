@@ -18,9 +18,10 @@
                     <a href="{% url 'my_books' %}" class="text-lg text-gray-700 hover:text-blue-600">📚 Mis libros</a>
                     <a href="{% url 'exchange_books' %}" class="text-lg text-gray-700 hover:text-blue-600">🔄 Intercambiar</a>
                     <a href="{% url 'received_requests' %}" class="text-lg text-gray-700 hover:text-blue-600">📨 Solicitudes</a>
+                    <a href="{% url 'sent_requests' %}" class="text-lg text-gray-700 hover:text-blue-600"> Solicitudes Enviadas  </a>
                     <a href="{% url 'exchange_history' %}" class="text-lg text-gray-700 hover:text-blue-600">📖 Historial</a>
                     <a href="{% url 'ver_perfil' user.id %}" class="text-lg text-gray-700 hover:text-blue-600">👤 Mi perfil</a>
-
+                     
 
                 {% endif %}
             </div>

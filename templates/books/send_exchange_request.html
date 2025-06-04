@@ -1,0 +1,23 @@
+{% extends 'products/base.html' %}
+{% block title %}Enviar Solicitud de Intercambio{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-10 px-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📩 Solicitar Intercambio</h1>
+
+    <div class="bg-white p-6 rounded shadow mb-6">
+        <h2 class="text-xl font-semibold text-gray-800">{{ book.title }}</h2>
+        <p class="text-gray-600">Autor: {{ book.author }}</p>
+        <p class="text-gray-500 text-sm">Género: {{ book.genre }} | Estado: {{ book.condition }} | Ciudad: {{ book.location }}</p>
+    </div>
+
+    <form method="post" class="bg-white p-6 rounded shadow space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            🚀 Enviar Solicitud
+        </button>
+    </form>
+</div>
+{% endblock %}

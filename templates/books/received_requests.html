@@ -9,14 +9,47 @@
         <ul class="space-y-4">
             {% for req in requests %}
                 <li class="bg-white p-4 rounded shadow">
-                    <p class="text-gray-800"><strong>{{ req.sender }}</strong> quiere tu libro: <strong>{{ req.book.title }}</strong></p>
+                    <p class="text-gray-800">
+                        <strong>{{ req.sender }}</strong> quiere tu libro: <strong>{{ req.book.title }}</strong><br>
+                        {% if req.offered_book %}
+                            📚 A cambio ofrece: <strong>{{ req.offered_book.title }}</strong> ({{ req.offered_book.condition }}, {{ req.offered_book.genre }})
+                        {% else %}
+                            ⚠️ No se especificó libro ofertado.
+                        {% endif %}
+                    </p>
                     <p class="text-gray-600">Estado: {{ req.status }}</p>
+
                     {% if req.status == 'pending' %}
-                        <form method="post" action="{% url 'handle_request' req.id %}" class="mt-2 space-x-2">
+                        {% if req.initiated %}
+                            <a href="{% url 'conversation' req.id %}" class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                                💬 Ver detalles
+                            </a>
+                        {% else %}
+                            <form method="post" action="{% url 'initiate_conversation' req.id %}" class="mt-2">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                                    ✅ Estoy interesado
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'handle_request' req.id %}" class="mt-2">
                             {% csrf_token %}
-                            <button name="action" value="accept" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Aceptar</button>
-                            <button name="action" value="reject" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Rechazar</button>
+                            <button name="action" value="reject" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                                ❌ Rechazar
+                            </button>
                         </form>
+
+                        {% if not req.initiated %}
+                            <p class="text-sm text-gray-500 mt-1">Podrás aceptar esta solicitud dentro de la conversación.</p>
+                        {% endif %}
+                    {% elif req.status == 'accepted' %}
+                        <a href="{% url 'conversation' req.id %}" class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            💬 Ver detalles
+                        </a>
+                        <p class="text-sm text-gray-500 mt-2">Este intercambio ya fue aceptado.</p>
+                    {% elif req.status == 'rejected' %}
+                        <p class="text-sm text-gray-500 mt-2">Este intercambio fue rechazado.</p>
                     {% endif %}
                 </li>
             {% endfor %}

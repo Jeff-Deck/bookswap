@@ -7,7 +7,7 @@ from .views import (
     received_requests_view,
     handle_request_view,
     exchange_history_view,
-    rate_exchange_view
+    rate_exchange_view, conversation_view, sent_requests_view, initiate_conversation_view
 )
 
 urlpatterns = [
@@ -19,5 +19,9 @@ urlpatterns = [
     path('solicitudes/gestionar/<int:request_id>/', handle_request_view, name='handle_request'),
     path('historial/', exchange_history_view, name='exchange_history'),
     path('historial/calificar/<int:exchange_id>/', rate_exchange_view, name='rate_exchange'),
+    path('conversacion/<int:request_id>/', conversation_view, name='conversation'),
+    path('solicitudes/enviadas/', sent_requests_view, name='sent_requests'),
+    path('solicitudes/iniciar/<int:request_id>/', initiate_conversation_view, name='initiate_conversation'),
+
 
 ]

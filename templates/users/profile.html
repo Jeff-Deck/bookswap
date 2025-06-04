@@ -35,8 +35,8 @@
             <ul class="space-y-2">
                 {% for s in solicitudes %}
                 <li class="border border-gray-300 rounded p-4">
-                    <p class="text-gray-800">📖 Libro: <strong>{{ s.book.title }}</strong></p>
-                    <p class="text-sm text-gray-600">De: {{ s.sender }} | Estado: {{ s.status }} | Fecha: {{ s.timestamp|slice:":16" }}</p>
+                    <p class="text-gray-800">📖 Libro: <strong>{{ s.book_title }}</strong></p>
+                    <p class="text-sm text-gray-600">De: {{ s.sender_username }} | Estado: {{ s.status }} | Fecha: {{ s.timestamp|slice:":16" }}</p>
                 </li>
                 {% endfor %}
             </ul>
@@ -52,7 +52,14 @@
             <ul class="space-y-2">
                 {% for h in historial %}
                 <li class="border border-gray-300 rounded p-4">
-                    <p class="text-gray-800">📖 {{ h.book.title }} con {{ h.receiver }}</p>
+                    <p class="text-gray-800">
+                       📖 {{ h.book.title }} con 
+                    {% if h.sender_id == user.id %}
+                        {{ h.receiver_username }}
+                    {% else %}
+                        {{ h.sender_username }}
+                    {% endif %}
+                    </p>
                     <p class="text-sm text-gray-600">Fecha: {{ h.exchanged_on|slice:":16" }}</p>
                 </li>
                 {% endfor %}

@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import BookForm,FastRatingForm  
+from .forms import BookForm,FastRatingForm, ExchangeRequestForm  
 from .models import Book, ExchangeRequest,ExchangeHistory  
 from django.db.models import Q
-import requests
+import requests, json
 
 @login_required
 def create_book_view(request):
@@ -49,15 +49,32 @@ def exchange_books_view(request):
 @login_required
 def send_exchange_request(request, book_id):
     book = get_object_or_404(Book, id=book_id)
+    
     if book.owner == request.user:
-        return redirect('home')  # Evita que un usuario solicite su propio libro
+        return redirect('home')  # No puede solicitar su propio libro
 
-    ExchangeRequest.objects.create(
-        sender=request.user,
-        receiver=book.owner,
-        book=book
-    )
-    return redirect('received_requests')  # <- Corrección importante
+    if request.method == 'POST':
+        form = ExchangeRequestForm(request.POST)
+        form.fields['offered_book'].queryset = Book.objects.filter(owner=request.user, available=True)
+
+        if form.is_valid():
+            offered_book = form.cleaned_data['offered_book']
+            ExchangeRequest.objects.create(
+                sender=request.user,
+                receiver=book.owner,
+                book=book,
+                offered_book=offered_book
+            )
+            return redirect('received_requests')
+    else:
+        form = ExchangeRequestForm()
+        form.fields['offered_book'].queryset = Book.objects.filter(owner=request.user, available=True)
+
+    return render(request, 'books/send_exchange_request.html', {
+        'form': form,
+        'book': book
+    })
+
 
 @login_required
 def received_requests_view(request):
@@ -70,10 +87,20 @@ def handle_request_view(request, request_id):
 
     if req.status == 'pending' and request.method == 'POST':
         action = request.POST.get('action')
+
         if action == 'accept':
             req.status = 'accepted'
+
+            # Transferir propiedad del libro solicitado
+            req.book.owner = req.sender
             req.book.available = False
             req.book.save()
+
+            # Transferir propiedad del libro ofertado (si existe)
+            if req.offered_book:
+                req.offered_book.owner = req.receiver
+                req.offered_book.available = False
+                req.offered_book.save()
 
             # Rechazar otras solicitudes pendientes por este libro
             ExchangeRequest.objects.filter(
@@ -84,6 +111,7 @@ def handle_request_view(request, request_id):
             # Registrar en el historial
             ExchangeHistory.objects.create(
                 book=req.book,
+                offered_book=req.offered_book,
                 sender=req.sender,
                 receiver=req.receiver
             )
@@ -92,7 +120,9 @@ def handle_request_view(request, request_id):
             req.status = 'rejected'
 
         req.save()
+
     return redirect('received_requests')
+
 
 @login_required
 def exchange_history_view(request):
@@ -165,3 +195,64 @@ def rate_exchange_view(request, exchange_id):
         'exchange': exchange,
         'other_user': other_user
     })
+
+
+@login_required
+def conversation_view(request, request_id):
+    #Asegura que solo sender o receiver puedan acceder
+    exchange = get_object_or_404(
+        ExchangeRequest.objects.filter(
+            Q(sender=request.user) | Q(receiver=request.user),
+            id=request_id,
+            initiated=True
+
+        )
+    )
+
+    # Determina quién es el otro usuario
+    other_user = exchange.receiver if request.user == exchange.sender else exchange.sender
+
+    # Enviar mensaje
+    if request.method == 'POST':
+        message = request.POST.get("message")
+        data = {
+            "exchange_request_id": exchange.id,
+            "sender_id": request.user.id,
+            "content": message
+        }
+        try:
+            requests.post("http://localhost:8001/messages/", json=data)
+        except Exception as e:
+            print("❌ Error enviando mensaje:", e)
+
+        return redirect('conversation', request_id=exchange.id)
+
+    # Obtener mensajes
+    try:
+        res = requests.get(f"http://localhost:8001/messages/{exchange.id}")
+        messages = res.json() if res.status_code == 200 else []
+    except:
+        messages = []
+
+    return render(request, "books/conversacion.html", {
+        "exchange": exchange,
+        "messages": messages,
+        "other_user": other_user
+    })
+    
+    
+@login_required
+def sent_requests_view(request):
+    requests = ExchangeRequest.objects.filter(sender=request.user).order_by('-timestamp')
+    return render(request, 'books/sent_requests.html', {'requests': requests})
+
+
+@login_required
+def initiate_conversation_view(request, request_id):
+    req = get_object_or_404(ExchangeRequest, id=request_id, receiver=request.user)
+
+    if req.status == 'pending' and not req.initiated:
+        req.initiated = True
+        req.save()
+
+    return redirect('received_requests')

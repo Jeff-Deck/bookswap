@@ -1,0 +1,41 @@
+{% extends 'products/base.html' %}
+{% block title %}Solicitudes Enviadas{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📤 Solicitudes de Intercambio Enviadas</h1>
+
+    {% if requests %}
+        <ul class="space-y-4">
+            {% for req in requests %}
+                <li class="bg-white p-4 rounded shadow">
+                    <p class="text-gray-800">
+                        Has solicitado el libro: <strong>{{ req.book.title }}</strong> de <strong>{{ req.receiver }}</strong><br>
+                        {% if req.offered_book %}
+                            📚 Ofreciste a cambio: <strong>{{ req.offered_book.title }}</strong> ({{ req.offered_book.condition }}, {{ req.offered_book.genre }})
+                        {% else %}
+                            ⚠️ No especificaste libro ofertado.
+                        {% endif %}
+                    </p>
+                    <p class="text-gray-600">Estado: {{ req.status }}</p>
+
+                    {% if req.status == 'accepted' and req.initiated %}
+                        <a href="{% url 'conversation' req.id %}" class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            💬 Ver conversación
+                        </a>
+                        <p class="text-sm text-green-600 mt-1">✅ Intercambio aceptado.</p>
+
+                    {% elif req.status == 'rejected' %}
+                        <p class="text-sm text-red-600 mt-1">❌ Intercambio rechazado.</p>
+
+                    {% elif req.status == 'pending' and not req.initiated %}
+                        <p class="text-sm text-gray-500 mt-1">Esperando que el receptor confirme interés.</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-600">Aún no has enviado solicitudes de intercambio.</p>
+    {% endif %}
+</div>
+{% endblock %}

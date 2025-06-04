@@ -1,0 +1,57 @@
+{% extends 'products/base.html' %}
+{% block title %}Conversación{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">📨 Conversación entre usuarios</h2>
+
+    <div id="messages" class="bg-white p-4 border rounded shadow max-h-96 overflow-y-scroll mb-4">
+        {% for m in messages %}
+            <div class="mb-2">
+                <span class="text-sm font-semibold {% if m.sender_id == user.id %}text-blue-600{% else %}text-green-600{% endif %}">
+                    {% if m.sender_id == user.id %}Tú{% else %}{{ other_user.username }}{% endif %}
+                </span>:
+                <span class="text-gray-800">{{ m.content }}</span>
+                <div class="text-xs text-gray-500">{{ m.timestamp|slice:":16" }}</div>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No hay mensajes aún.</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="flex gap-2">
+        {% csrf_token %}
+        <input name="message" type="text" class="flex-grow px-3 py-2 border rounded" placeholder="Escribe tu mensaje...">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Enviar</button>
+    </form>
+
+    <div class="mt-6 flex gap-4">
+                {% if exchange.status == 'pending' %}
+            <form method="post" action="{% url 'handle_request' exchange.id %}">
+                {% csrf_token %}
+                <button name="action" value="accept" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                    ✅ Aceptar Intercambio
+                </button>
+                <button name="action" value="reject" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                    ❌ Rechazar Intercambio
+                </button>
+            </form>
+        {% else %}
+            <p class="text-sm text-gray-500 mt-4">Este intercambio ya fue <strong>{{ exchange.status }}</strong>. No se pueden realizar más acciones.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    setInterval(() => {
+        fetch(window.location.href)
+            .then(r => r.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                const newMessages = doc.querySelector("#messages").innerHTML;
+                document.querySelector("#messages").innerHTML = newMessages;
+            });
+    }, 15000); // 15 segundos
+</script>
+{% endblock %}
